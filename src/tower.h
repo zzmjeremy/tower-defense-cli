@@ -24,11 +24,11 @@ class Tower {
 
     Tower(int x, int y, int rateOfFire);
 
-    void Update(std::vector<Enemy*> enemies, std::vector<Bullet>& bullets);
+    void Update(const std::vector<Enemy*>& enemies, std::vector<Bullet>& bullets);
 
     bool GetAutoFire() const;
     void SetAutoFire(bool autoFire);
-    void ManualFire(std::vector<Enemy*> enemies,
+    void ManualFire(const std::vector<Enemy*>& enemies,
                     std::vector<Bullet>& bullets);
 
    private:
@@ -38,6 +38,9 @@ class Tower {
     void FireAtEnemy(const std::vector<Enemy*>& enemies,
                      std::vector<Bullet>& bullets);
     void FireBulletAtEnemy(Enemy& enemy, std::vector<Bullet>& bullets);
+    static long long CalculateDistance(const Vector2D& first,
+                                       const Vector2D& second);
+    Enemy* FindClosestEnemy(const std::vector<Enemy*>& enemies) const;
 };
 
 #endif  // TOWER_H

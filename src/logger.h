@@ -4,7 +4,9 @@
 #define LOGGER_H
 
 #include <fstream>
-#include <vector>
+#include <condition_variable>
+#include <deque>
+#include <mutex>
 #include <string>
 #include <thread>
 
@@ -16,6 +18,8 @@
 class Logger {
    public:
     static Logger& GetInstance();
+    void Log(const std::string& message);
+    void Flush();
 
     ~Logger();
 
@@ -24,7 +28,11 @@ class Logger {
 
     std::ofstream logFile;
     std::thread logThread;
-    std::vector<std::string> logQueue;
+    std::deque<std::string> logQueue;
+    std::mutex mutex;
+    std::condition_variable queueChanged;
+    std::condition_variable queueDrained;
+    size_t pendingLogs = 0;
     bool exitFlag = false;
 
     void ProcessLogs();

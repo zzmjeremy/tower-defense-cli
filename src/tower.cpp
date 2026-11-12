@@ -1,8 +1,9 @@
 //Copyright 2K Games, Engineering Graduate Program. All rights reserved. DO NOT redistribute.
 
 #include "tower.h"
-#include "logger.h"
 
+#include <algorithm>
+#include <cstdlib>
 #include <limits>
 
 Tower::Tower(int x, int y, int rateOfFire)
@@ -12,7 +13,7 @@ Tower::Tower(int x, int y, int rateOfFire)
       bAutoFire(true)
     {}
 
-void Tower::Update(std::vector<Enemy*> enemies,
+void Tower::Update(const std::vector<Enemy*>& enemies,
                    std::vector<Bullet>& bullets) {
     if (bAutoFire) {
         FireAtEnemy(enemies, bullets);
@@ -27,9 +28,10 @@ void Tower::FireAtEnemy(const std::vector<Enemy*>& enemies,
 
     if (timeElapsed >= std::chrono::milliseconds(rateOfFire)) {
         Enemy* closestEnemy = FindClosestEnemy(enemies);
+        if (closestEnemy == nullptr) return;
 
         if (bAutoFire) {
-            int distance = CalculateDistance(closestEnemy->GetPosition(), position);
+            long long distance = CalculateDistance(closestEnemy->GetPosition(), position);
 
             if (distance <= ENEMYRANGE) {
                 FireBulletAtEnemy(*closestEnemy, bullets);
@@ -46,7 +48,7 @@ bool Tower::GetAutoFire() const { return bAutoFire; }
 
 void Tower::SetAutoFire(bool autoFire) { bAutoFire = autoFire; }
 
-void Tower::ManualFire(std::vector<Enemy*> enemies,
+void Tower::ManualFire(const std::vector<Enemy*>& enemies,
                        std::vector<Bullet>& bullets) {
     FireAtEnemy(enemies, bullets);
 }
@@ -59,4 +61,25 @@ void Tower::FireBulletAtEnemy(Enemy& enemy, std::vector<Bullet>& bullets) {
     if (enemy.GetPosition().y < position.y) direction.y = -1;
 
     bullets.emplace_back(position, direction);
+}
+
+long long Tower::CalculateDistance(const Vector2D& first,
+                                   const Vector2D& second) {
+    // Bullets advance one cell on each axis per update, including diagonals.
+    return std::max(std::llabs(static_cast<long long>(first.x) - second.x),
+                    std::llabs(static_cast<long long>(first.y) - second.y));
+}
+
+Enemy* Tower::FindClosestEnemy(const std::vector<Enemy*>& enemies) const {
+    Enemy* closest = nullptr;
+    long long shortestDistance = std::numeric_limits<long long>::max();
+    for (Enemy* enemy : enemies) {
+        if (enemy == nullptr || !enemy->IsActive()) continue;
+        const long long distance = CalculateDistance(enemy->GetPosition(), position);
+        if (distance < shortestDistance) {
+            shortestDistance = distance;
+            closest = enemy;
+        }
+    }
+    return closest;
 }

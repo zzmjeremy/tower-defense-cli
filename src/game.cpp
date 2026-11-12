@@ -125,7 +125,7 @@ size_t Game::ActiveEnemiesCount() { return activeEnemiesCount; }
 
 bool Game::IsGameOver() { return isGameOver; }
 
-void Game::SetGameOver(bool isGameOver) { isGameOver = isGameOver; }
+void Game::SetGameOver(bool isGameOver) { this->isGameOver = isGameOver; }
 
 void Game::UpdateGrid() {
     grid.ClearTextureBuffer();

@@ -4,7 +4,7 @@
 #define POOLER_H
 
 #include <memory>
-#include <list>
+#include <vector>
 
 #include "enemy.h"
 
@@ -17,10 +17,15 @@
 class Pooler {
    public:
     Pooler(size_t minimumPoolSize);
-    size_t PoolSize();
+    void Clear();
+    Enemy* SpawnEnemy(const Vector2D& position);
+    void DespawnEnemy(Enemy* enemy);
+    std::vector<Enemy*> GetActiveEnemies() const;
+    size_t PoolSize() const;
 
    private:
-    std::list<Enemy*> enemies;
+    std::vector<std::unique_ptr<Enemy>> enemies;
+    std::vector<Enemy*> availableEnemies;
     size_t minimumPoolSize;
 
     Enemy* CreateEnemy();

@@ -1,0 +1,3 @@
+C:\msys64\ucrt64\bin\cmake.exe -E rm -f CMakeFiles\tower-defense-cli.dir/objects.a
+C:\msys64\ucrt64\bin\ar.exe qc CMakeFiles\tower-defense-cli.dir/objects.a @CMakeFiles\tower-defense-cli.dir\objects1.rsp
+C:\msys64\ucrt64\bin\g++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\tower-defense-cli.dir/objects.a -Wl,--no-whole-archive -o tower-defense-cli.exe -Wl,--out-implib,libtower-defense-cli.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\tower-defense-cli.dir\linkLibs.rsp
